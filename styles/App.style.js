@@ -4,18 +4,19 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 export default StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'row'
   },
   glassContainer: {
     flex: 7,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
   },
   progressSection: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#81c6b8',
+    backgroundColor: '#fffff1',
   },
   backgroundImage: {
     position: 'absolute',
