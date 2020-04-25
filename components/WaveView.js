@@ -4,24 +4,20 @@ import {Surface, Text, Shape, Path, LinearGradient} from '@react-native-communit
 
 export class WaveView extends React.Component<{}> {
   static defaultProps = {
-    powerPercent: 50, //0-100
-    proportion: 0.5,//0-1
-    surfaceWidth: 300,
-    surfaceHeigth: 300,
-    backgroundColor: '#FF7800',
-    stroke: 'white',
     fill: 'white',
+    stroke: 'white',
     strokeWidth: 2,
+    powerPercent: 50,
+    width: 300,
+    height: 300,
+    backgroundColor: '#FF7800',
     superViewBackgroundColor: 'blue',
   };
 
   constructor(props) {
     super(props);
-    this.copyRadian = 0.5;
-    this.proportion = this.props.proportion;
-    this.surfaceWidth = this.props.surfaceWidth;
-    this.surfaceHeigth = this.props.surfaceHeigth;
-    this.radius = this.surfaceWidth / 2.0;
+    this.width = this.props.width;
+    this.height = this.props.height;
     this.state = {
       delta: 0,
       amplitude: 1.5,
@@ -30,8 +26,8 @@ export class WaveView extends React.Component<{}> {
 
   componentDidMount() {
     this.intervalTimer = setInterval(() => {
-      var delta = (this.state.delta += 0.10);
-      var amplitude = this.state.amplitude;
+      const delta = (this.state.delta += 0.10);
+      const amplitude = this.state.amplitude;
       this.setState({
         delta: delta,
         amplitude: amplitude,
@@ -44,33 +40,33 @@ export class WaveView extends React.Component<{}> {
   }
 
   drawWave() {
-    var powerPercent = parseInt(this.props.powerPercent);
-    const radius = this.props.surfaceWidth / 2 - 30;
+    let circleY;
+    const powerPercent = parseInt(this.props.powerPercent);
+    const radius = this.props.width / 2;
     if (powerPercent < 100) {
-      const centerX = this.props.surfaceWidth / 2;
-      const centerY = this.props.surfaceHeigth / 2;
+      const centerX = this.props.width / 2;
+      const centerY = this.props.height / 2;
       const delta = this.state.delta, amplitude = this.state.amplitude;
       const defaultAmplitude = 5;
-      var currentLinePointY = radius * 2 + 30 - radius * 2 * (this.props.powerPercent / 100.0);
-      var startX = 30, endX = this.props.surfaceWidth - startX;
-      var startPoint, endPoint;
+      const currentLinePointY = radius * 2 - radius * 2 * (this.props.powerPercent / 100.0);
+      const startX = 0, endX = this.props.width - startX;
+      let startPoint, endPoint;
       const linePath = new Path();
-      for (var x = startX; x <= endX; x++) {
-        var y = amplitude * Math.sin(x / 180 * Math.PI + 4 * delta / Math.PI) * defaultAmplitude + currentLinePointY;
+      for (let x = startX; x <= endX; x++) {
+        let y = amplitude * Math.sin(x / 180 * Math.PI + 4 * delta / Math.PI) * defaultAmplitude + currentLinePointY;
         if (y < centerY) {
-          var circleY = centerY - Math.sqrt(Math.pow(radius, 2) - Math.pow(centerX - x, 2));
+          circleY = centerY - Math.sqrt(Math.pow(radius, 2) - Math.pow(centerX - x, 2));
           if (y < circleY) {
             y = circleY;
           }
         } else if (y > centerY) {
-          var circleY = centerY + Math.sqrt(Math.pow(radius, 2) - Math.pow(centerX - x, 2));
+          circleY = centerY + Math.sqrt(Math.pow(radius, 2) - Math.pow(centerX - x, 2));
           if (y > circleY) {
             y = circleY;
           }
         }
         if (x == startX) {
           linePath.moveTo(x, y);
-          startPoint = [x, y];
         } else if (x == endX) {
           endPoint = [x, y];
         }
@@ -78,14 +74,15 @@ export class WaveView extends React.Component<{}> {
       }
       linePath.moveTo(endPoint[0], endPoint[1]);
       linePath.arc(-2 * radius, 0, radius);
+      // linePath.rect(0.0, 0.0, 100.0, 100.0)
       linePath.close();
       return (
         //Water color
-        <Shape d={linePath} strokeWidth={0} fill={'#00bbfb'}/>
+        <Shape d={linePath} fill={'#00bbfb'}/>
       );
     } else {
       const linePath = new Path()
-        .moveTo(radius + 30, 30)
+        .moveTo(radius, 0)
         .arc(0, radius * 2, radius)
         .arc(0, -radius * 2, radius)
         .close();
@@ -98,7 +95,7 @@ export class WaveView extends React.Component<{}> {
   drawWaveView() {
     return (
       <View style={{backgroundColor: 'rgba(0,0,0,0.0)'}}>
-        <Surface width={this.surfaceWidth} height={this.surfaceHeigth}>
+        <Surface width={this.width} height={this.height}>
           {this.drawWave()}
         </Surface>
       </View>
@@ -107,7 +104,7 @@ export class WaveView extends React.Component<{}> {
 
   render() {
     return (
-      <View style={{width: this.props.surfaceWidth, height: this.props.surfaceHeigth}}>
+      <View style={{width: this.props.width, height: this.props.height}}>
         {this.drawWaveView()}
       </View>
     );
