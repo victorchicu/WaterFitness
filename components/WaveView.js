@@ -5,11 +5,11 @@ import {Surface, Text, Shape, Path, LinearGradient} from '@react-native-communit
 export class WaveView extends React.Component<{}> {
   static defaultProps = {
     fill: 'white',
+    width: 300,
+    height: 300,
     stroke: 'white',
     strokeWidth: 2,
     powerPercent: 50,
-    width: 300,
-    height: 300,
     backgroundColor: '#FF7800',
     superViewBackgroundColor: 'blue',
   };
@@ -26,13 +26,13 @@ export class WaveView extends React.Component<{}> {
 
   componentDidMount() {
     this.intervalTimer = setInterval(() => {
-      const delta = (this.state.delta += 0.10);
+      const delta = (this.state.delta += 0.15);
       const amplitude = this.state.amplitude;
       this.setState({
         delta: delta,
         amplitude: amplitude,
       });
-    }, 25);
+    }, 50);
   }
 
   componentWillUnmount() {
@@ -50,8 +50,8 @@ export class WaveView extends React.Component<{}> {
       const defaultAmplitude = 5;
       const currentLinePointY = radius * 2 - radius * 2 * (this.props.powerPercent / 100.0);
       const startX = 0, endX = this.props.width - startX;
-      let startPoint, endPoint;
       const linePath = new Path();
+      let endPoint;
       for (let x = startX; x <= endX; x++) {
         let y = amplitude * Math.sin(x / 180 * Math.PI + 4 * delta / Math.PI) * defaultAmplitude + currentLinePointY;
         if (y < centerY) {
@@ -74,11 +74,10 @@ export class WaveView extends React.Component<{}> {
       }
       linePath.moveTo(endPoint[0], endPoint[1]);
       linePath.arc(-2 * radius, 0, radius);
-      // linePath.rect(0.0, 0.0, 100.0, 100.0)
       linePath.close();
       return (
         //Water color
-        <Shape d={linePath} fill={'#00bbfb'}/>
+        <Shape d={linePath} fill={'#00bbfb'} opacity={this.props.opacity} />
       );
     } else {
       const linePath = new Path()
